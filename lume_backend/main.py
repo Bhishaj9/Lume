@@ -1,6 +1,8 @@
 """
 Lume Media Research API - Main Application
 """
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,10 +28,14 @@ def create_application() -> FastAPI:
         redoc_url="/redoc",
     )
 
-    # CORS middleware
+    # CORS middleware — origins are configurable via the CORS_ORIGINS env var
+    # (comma-separated).  Default keeps local development working.
+    cors_origins = os.environ.get(
+        "CORS_ORIGINS", "http://localhost,http://10.0.2.2"
+    ).split(",")
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost", "http://10.0.2.2"],
+        allow_origins=cors_origins,
         allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -69,10 +75,11 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
 
+    port = int(os.environ.get("PORT", "8000"))
     uvicorn.run(
         "lume_backend.main:app",
         host="0.0.0.0",
-        port=8000,
+        port=port,
         reload=True,
         log_level="info",
     )

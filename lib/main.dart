@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/exceptions/backend_exceptions.dart';
+import 'core/network/api_config.dart';
 import 'core/network/connectivity_provider.dart';
 import 'presentation/pages/video_player_page.dart';
 import 'presentation/providers/tmdb_provider.dart';
@@ -9,6 +11,11 @@ import 'presentation/widgets/no_internet_banner.dart';
 import 'presentation/widgets/service_unavailable_screen.dart';
 
 void main() {
+  // ── API environment indicator ──────────────────────────────
+  debugPrint('┌─────────────────────────────────────────');
+  debugPrint('│ Lume API URL → $apiBaseUrl');
+  debugPrint('└─────────────────────────────────────────');
+
   ErrorWidget.builder = (FlutterErrorDetails details) {
     final exception = details.exception;
     if (exception is BackendHttpException && exception.isServiceUnavailable) {
@@ -41,11 +48,27 @@ class LumeApp extends ConsumerWidget {
 
     final internetState = ref.watch(internetStatusProvider);
 
-    return MaterialApp(
+    Widget app = MaterialApp(
       home: Scaffold(
         body: SafeArea(
           child: Column(
             children: [
+              // ── API environment chip (debug/profile only) ──
+              if (kDebugMode)
+                Container(
+                  width: double.infinity,
+                  color: Colors.orange.shade800,
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    'API → $apiBaseUrl',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               if (internetState.value == false) const NoInternetBanner(),
               Expanded(
                 child: Center(
@@ -86,5 +109,8 @@ class LumeApp extends ConsumerWidget {
         ),
       ),
     );
+
+    return app;
   }
 }
+
