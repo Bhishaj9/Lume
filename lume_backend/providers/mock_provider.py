@@ -4,8 +4,8 @@ For testing and development purposes.
 """
 import random
 from typing import List, Optional
-from providers.base import BaseProvider, ProviderNotFoundError
-from models.schemas import MediaLink
+from lume_backend.providers.base import BaseProvider, ProviderNotFoundError
+from lume_backend.models.schemas import MediaLink
 
 
 class MockProvider(BaseProvider):
