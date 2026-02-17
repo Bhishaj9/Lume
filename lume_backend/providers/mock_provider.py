@@ -81,7 +81,8 @@ class MockProvider(BaseProvider):
         self, 
         query: str, 
         season: Optional[int] = None, 
-        episode: Optional[int] = None
+        episode: Optional[int] = None,
+        limit: Optional[int] = None,
     ) -> List[MediaLink]:
         """
         Search mock database for matching titles.
@@ -154,7 +155,8 @@ class RandomMockProvider(BaseProvider):
         self, 
         query: str, 
         season: Optional[int] = None, 
-        episode: Optional[int] = None
+        episode: Optional[int] = None,
+        limit: Optional[int] = None,
     ) -> List[MediaLink]:
         """Generate random results."""
         formatted_query = self._format_tv_query(query, season, episode)
