@@ -10,6 +10,7 @@ from lume_backend.providers.base import (
     BaseProvider,
     ProviderConnectionError,
     ProviderNotFoundError,
+    ProviderTimeoutError,
 )
 from lume_backend.providers.mock_provider import MockProvider
 
@@ -22,6 +23,7 @@ router = APIRouter(
         404: {"description": "No results found"},
         422: {"description": "Invalid TV season/episode parameters"},
         503: {"description": "Provider unavailable"},
+        504: {"description": "Provider timeout"},
     },
 )
 
@@ -56,6 +58,14 @@ def _map_provider_exception(exc: Exception) -> HTTPException:
                 "message": str(exc),
             },
         )
+    if isinstance(exc, ProviderTimeoutError):
+        return HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail={
+                "error": "PROVIDER_TIMEOUT",
+                "message": str(exc),
+            },
+        )
     return HTTPException(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail={
@@ -64,6 +74,12 @@ def _map_provider_exception(exc: Exception) -> HTTPException:
         },
     )
 
+
+
+
+def _filter_live_results(results: list[MediaLink]) -> list[MediaLink]:
+    """Remove dead torrents (zero or negative seeds)."""
+    return [result for result in results if result.seeds > 0]
 
 def _format_tv_query(query: str, season: Optional[int], episode: Optional[int]) -> str:
     """Format a media query for TV searches and validate season/episode bounds."""
@@ -113,13 +129,14 @@ async def resolve_media(
     """
     formatted_query = _format_tv_query(query, season, episode)
     try:
-        results = await provider.search(query, season=season, episode=episode)
+        results = await provider.search(query, season=season, episode=episode, limit=1)
+        live_results = _filter_live_results(results)
 
-        if not results:
-            raise ProviderNotFoundError(f"No results found for: {formatted_query}")
+        if not live_results:
+            raise ProviderNotFoundError(f"No live results found for: {formatted_query}")
 
-        # Return top result (already sorted by provider)
-        return results[0]
+        # Return top live result (already sorted by provider)
+        return live_results[0]
     except HTTPException:
         raise
     except Exception as exc:
@@ -142,7 +159,7 @@ async def search_media(
     query: str,
     season: Optional[int] = Query(None, description="Season number for TV shows"),
     episode: Optional[int] = Query(None, description="Episode number for TV shows"),
-    limit: int = Query(10, description="Maximum number of results"),
+    limit: int = Query(10, ge=1, le=25, description="Maximum number of results (1-25)"),
     provider: BaseProvider = Depends(get_provider),
 ) -> SearchResult:
     """
@@ -157,15 +174,16 @@ async def search_media(
     """
     _format_tv_query(query, season, episode)
     try:
-        results = await provider.search(query, season=season, episode=episode)
+        results = await provider.search(query, season=season, episode=episode, limit=limit)
+        live_results = _filter_live_results(results)
 
-        # Apply limit
-        limited_results = results[:limit]
+        # Apply strict limit on live results
+        limited_results = live_results[:limit]
 
         return SearchResult(
             query=query,
             results=limited_results,
-            total_results=len(results),
+            total_results=len(live_results),
             provider_name=provider.name,
         )
     except HTTPException:

@@ -23,7 +23,8 @@ class BaseProvider(ABC):
         self, 
         query: str, 
         season: Optional[int] = None, 
-        episode: Optional[int] = None
+        episode: Optional[int] = None,
+        limit: Optional[int] = None,
     ) -> List[MediaLink]:
         """
         Search for media matching the query string.
@@ -32,6 +33,7 @@ class BaseProvider(ABC):
             query: Search query string (movie title or TV show name)
             season: Optional season number for TV shows
             episode: Optional episode number for TV shows
+            limit: Maximum number of results the provider should process
             
         Returns:
             List of MediaLink objects sorted by relevance/quality
@@ -82,4 +84,9 @@ class ProviderNotFoundError(ProviderError):
 
 class ProviderConnectionError(ProviderError):
     """Raised when provider cannot be reached."""
+    pass
+
+
+class ProviderTimeoutError(ProviderError):
+    """Raised when provider calls exceed the configured timeout."""
     pass
