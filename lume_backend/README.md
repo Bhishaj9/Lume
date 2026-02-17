@@ -113,6 +113,17 @@ Use query=`all` to get all mock data:
 curl http://localhost:8000/resolve/all
 ```
 
+
+## Production Run
+
+Use multiple workers in production to handle concurrent clients:
+
+```bash
+uvicorn lume_backend.main:app --host 0.0.0.0 --port 8000 --workers 4 --log-level info
+```
+
+Keep `--reload` for development only.
+
 ## Documentation
 
 Once running, view interactive API docs:
