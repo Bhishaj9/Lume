@@ -7,7 +7,7 @@ A custom video player with Media3/ExoPlayer-style gestures and minimalist Materi
 ### 1. Video Player Controller (Task 1)
 - Uses `video_player` package for video playback
 - Auto-plays in landscape mode (fullscreen)
-- Supports network streaming URLs from torrent
+- Supports network streaming URLs from P2P source
 
 ### 2. Gesture Overlays (Task 2)
 
@@ -152,7 +152,7 @@ void _seekForward() {
 
 ## Notes
 
-1. **Platform Support**: Android only (requires torrent streamer)
+1. **Platform Support**: Android only (requires P2P streamer)
 2. **Permissions**: Requires storage and network permissions
 3. **Fullscreen**: Automatically enters immersive mode
 4. **Clean Up**: Properly disposes controller and restores orientation

@@ -23,7 +23,7 @@ Date: 2026-02-17
 5. TV query formatter (`_format_tv_query`) has no guardrails for invalid season/episode values (e.g., 0 or negative), producing malformed queries.
 
 ## Performance Optimization
-1. Replace blocking torrent provider calls with async/non-blocking wrappers (executor threads or async client).
+1. Replace blocking P2P provider calls with async/non-blocking wrappers (executor threads or async client).
 2. Introduce provider instance reuse and pooling strategy (today each request builds a new provider via dependency function).
 3. Add explicit HTTP timeout/retry/circuit-breaker strategy in production provider implementation.
 4. Validate `limit` in `/resolve/search/{query}` with bounds to avoid expensive over-fetching.
@@ -32,7 +32,7 @@ Date: 2026-02-17
 ## Refactoring Advice
 1. Consolidate duplicated exception-to-HTTP mapping logic across router endpoints.
 2. Move query formatting and validation into a dedicated utility/service used by both router and providers.
-3. Align repository structure so production torrent provider is under `lume_backend/providers/` and implements the same interface as mock provider.
+3. Align repository structure so production P2P provider is under `lume_backend/providers/` and implements the same interface as mock provider.
 4. Add explicit API-layer input validation for season/episode relationships (e.g., require both for episode-specific searches).
 5. Convert implementation claims in docs/README (80% prefetch, smart cache aging) into checked code references or tests to avoid documentation drift.
 

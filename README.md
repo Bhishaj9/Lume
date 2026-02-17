@@ -31,7 +31,7 @@ OLED-optimized True Black (#000000) backgrounds, Material 3 theming with Google 
 Palette extraction from movie posters with automatic accent color shifting, Material 3 ColorScheme generation.
 
 **Sprint 3: P2P Streaming Engine**  
-Torrent streaming with flutter_go_torrent_streamer, magnet link resolution via FastAPI backend.
+P2P streaming with flutter_go_stream_engine, magnet link resolution via FastAPI backend.
 
 **Sprint 4: Continue Watching**  
 Isar database for local watch history, progress tracking with 30-second auto-save intervals.
@@ -49,17 +49,17 @@ Auto-cleanup with 48-hour aging, 5GB threshold management, protection for active
 - **Material 3 Monet** - Dynamic theming with palette extraction
 - **Riverpod** - State management and dependency injection
 - **Isar** - High-performance local database
-- **P2P Streaming** - Torrent-based content delivery
+- **P2P Streaming** - Peer-to-peer content delivery
 - **CachedNetworkImage** - Efficient image caching
 
 ### Backend
 - **FastAPI** - Modern, fast Python web framework
-- **PirateBayAPI** - Torrent search integration
+- **PirateBayAPI** - P2P search integration
 - **TMDB API** - Movie and TV metadata
 - **Python 3.8+** - Async backend services
 
 ### Streaming
-- **flutter_go_torrent_streamer** - Native torrent streaming
+- **flutter_go_stream_engine** - Native P2P streaming
 - **video_player** - ExoPlayer integration with gestures
 - **Screen Brightness & Volume Control** - Immersive playback controls
 
@@ -138,7 +138,7 @@ lume/
 
 - [x] True Black OLED theme
 - [x] Material 3 Monet dynamic colors
-- [x] P2P torrent streaming
+- [x] P2P streaming
 - [x] Continue watching with Isar
 - [x] TV Show season/episode support
 - [x] Smart cache management

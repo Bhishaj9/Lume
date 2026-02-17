@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
-    <!-- Storage permissions for caching torrent data -->
+    <!-- Storage permissions for caching streaming data -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Torrent Streamer Service -->
+        <!-- P2P Streamer Service -->
         <service
             android:name="com.github.darksoul11.flutter_go_torrent_streamer.TorrentStreamerService"
             android:enabled="true"

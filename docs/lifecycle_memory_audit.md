@@ -12,14 +12,14 @@ This repository snapshot does **not** include a Flutter `lib/` source tree, incl
 ---
 
 ## Task 1: Resource Disposal Audit
-**Goal:** Verify `VideoPlayerController`, `ChewieController`, and `StreamSubscription` (torrent status) are always cancelled in `dispose()`.
+**Goal:** Verify `VideoPlayerController`, `ChewieController`, and `StreamSubscription` (stream status) are always cancelled in `dispose()`.
 
 ### Status
 ⚠️ **Blocked in this snapshot** — target file is missing.
 
 ### What must be true in code
 - `@override void dispose()` exists in `VideoPlayerPage` state class.
-- `_torrentStatusSubscription?.cancel()` (or equivalent) is called.
+- `_streamStatusSubscription?.cancel()` (or equivalent) is called.
 - `_chewieController?.dispose()` is called.
 - `_videoPlayerController?.dispose()` is called.
 - Disposal happens before `super.dispose()`.
@@ -67,7 +67,7 @@ Use `FutureProvider.autoDispose.family<...>` (or equivalent generated Riverpod a
 ### What must be true in code
 In the auto-play-next flow:
 1. Pause/stop old playback.
-2. Cancel old torrent status subscription(s).
+2. Cancel old stream status subscription(s).
 3. Dispose old `ChewieController`.
 4. Dispose old `VideoPlayerController`.
 5. Null out stale refs.
@@ -80,7 +80,7 @@ A helper like `_disposeCurrentPlayback()` called before `_initializePlayback(nex
 
 ## Commands Used For This Audit
 - `rg --files | rg 'video_player_page\\.dart|video.*player.*page\\.dart'`
-- `rg -n "linkResolverProvider|VideoPlayerController|ChewieController|Ghost HUD|autoDispose|Auto-Play Next|torrent status|StreamSubscription|video_player" -S`
+- `rg -n "linkResolverProvider|VideoPlayerController|ChewieController|Ghost HUD|autoDispose|Auto-Play Next|stream status|StreamSubscription|video_player" -S`
 
 ## Evidence in Existing Docs
 - Existing pre-deployment audit already records missing Flutter `lib/` source and inability to verify `linkResolverProvider` implementation in this snapshot.

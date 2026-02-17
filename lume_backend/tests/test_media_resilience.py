@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 from lume_backend.main import create_application
 from lume_backend.models.schemas import MediaLink
 from lume_backend.providers.base import BaseProvider, ProviderTimeoutError
-from lume_backend.providers.torrent_provider import TorrentProvider
+from lume_backend.providers.p2p_provider import P2PProvider
 from lume_backend.routers.media import get_provider
 
 
@@ -92,7 +92,7 @@ def test_limit_is_enforced_and_validated():
     assert bad_response.status_code == 422
 
 
-def test_torrent_provider_filters_dead_results_and_respects_limit(monkeypatch):
+def test_p2p_provider_filters_dead_results_and_respects_limit(monkeypatch):
     class FakePirateBayAPI:
         @staticmethod
         def Search(_query):
@@ -107,8 +107,8 @@ def test_torrent_provider_filters_dead_results_and_respects_limit(monkeypatch):
         def Download(item_id):
             return f"https://example.com/{item_id}"
 
-    monkeypatch.setattr("lume_backend.providers.torrent_provider.PirateBayAPI", FakePirateBayAPI)
-    provider = TorrentProvider()
+    monkeypatch.setattr("lume_backend.providers.p2p_provider.PirateBayAPI", FakePirateBayAPI)
+    provider = P2PProvider()
 
     results = asyncio.run(provider.search("query", limit=2))
 
@@ -116,7 +116,7 @@ def test_torrent_provider_filters_dead_results_and_respects_limit(monkeypatch):
     assert all(item.seeds > 0 for item in results)
 
 
-def test_torrent_provider_timeout_raises_provider_timeout(monkeypatch):
+def test_p2p_provider_timeout_raises_provider_timeout(monkeypatch):
     def slow_search(_query):
         import time
 
@@ -132,8 +132,8 @@ def test_torrent_provider_timeout_raises_provider_timeout(monkeypatch):
         def Download(_item_id):
             return "https://example.com/file"
 
-    monkeypatch.setattr("lume_backend.providers.torrent_provider.PirateBayAPI", FakePirateBayAPI)
-    provider = TorrentProvider()
+    monkeypatch.setattr("lume_backend.providers.p2p_provider.PirateBayAPI", FakePirateBayAPI)
+    provider = P2PProvider()
 
     try:
         asyncio.run(provider.search("query", limit=1))

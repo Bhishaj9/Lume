@@ -44,7 +44,7 @@ Frequent updates (e.g., playback position every 250–1000ms) can trigger broad 
 
 ### Evidence in current checkout
 - `WAKE_LOCK` permission is declared in `AndroidManifest.xml`.
-- Foreground service for torrent streaming is declared, which can increase battery impact if not lifecycle-gated.
+- Foreground service for P2P streaming is declared, which can increase battery impact if not lifecycle-gated.
 
 ### Pass criteria to apply in code
 - Acquire wake-lock **only** when playback state transitions to `playing`.

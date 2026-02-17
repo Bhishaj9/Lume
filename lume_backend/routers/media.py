@@ -78,7 +78,7 @@ def _map_provider_exception(exc: Exception) -> HTTPException:
 
 
 def _filter_live_results(results: list[MediaLink]) -> list[MediaLink]:
-    """Remove dead torrents (zero or negative seeds)."""
+    """Remove dead results (zero or negative seeds)."""
     return [result for result in results if result.seeds > 0]
 
 def _format_tv_query(query: str, season: Optional[int], episode: Optional[int]) -> str:

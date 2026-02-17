@@ -1,4 +1,4 @@
-"""Torrent provider implementation backed by PirateBayAPI."""
+"""P2P provider implementation backed by PirateBayAPI."""
 import asyncio
 from typing import List, Optional
 
@@ -16,11 +16,11 @@ from lume_backend.providers.base import BaseProvider, ProviderConnectionError, P
 PROVIDER_TIMEOUT_SECONDS = 15
 
 
-class TorrentProvider(BaseProvider):
-    """Provider that resolves media links from torrent index results."""
+class P2PProvider(BaseProvider):
+    """Provider that resolves media links from P2P index results."""
 
     def __init__(self) -> None:
-        super().__init__(name="TorrentProvider")
+        super().__init__(name="P2PProvider")
 
     async def search(
         self,
@@ -42,9 +42,9 @@ class TorrentProvider(BaseProvider):
                 timeout=PROVIDER_TIMEOUT_SECONDS,
             )
         except asyncio.TimeoutError as exc:
-            raise ProviderTimeoutError("Torrent provider search timed out") from exc
+            raise ProviderTimeoutError("P2P provider search timed out") from exc
         except Exception as exc:  # noqa: BLE001
-            raise ProviderConnectionError("Failed to query torrent provider") from exc
+            raise ProviderConnectionError("Failed to query P2P provider") from exc
 
         if not results:
             return []
