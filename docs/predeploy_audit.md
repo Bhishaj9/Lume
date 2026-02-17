@@ -13,6 +13,7 @@ Date: 2026-02-17
 - `README.md`
 - `docs/video_player_implementation.md`
 - `docs/riverpod_provider_usage.md`
+- `docs/lifecycle_memory_audit.md`
 
 ## Critical Bugs
 1. CORS is overly permissive and misconfigured for credentials (`allow_origins=["*"]` with `allow_credentials=True`), which is unsafe and can violate browser CORS rules.
