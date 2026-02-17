@@ -4,7 +4,7 @@ Defines the contract for all media providers.
 """
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from models.schemas import MediaLink
+from lume_backend.models.schemas import MediaLink
 
 
 class BaseProvider(ABC):

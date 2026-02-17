@@ -3,7 +3,8 @@ Lume Media Research API - Main Application
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import media
+
+from lume_backend.routers import media
 
 
 def create_application() -> FastAPI:
@@ -22,21 +23,21 @@ def create_application() -> FastAPI:
         "- Comprehensive error handling",
         version="1.0.0",
         docs_url="/docs",
-        redoc_url="/redoc"
+        redoc_url="/redoc",
     )
-    
+
     # CORS middleware
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # Configure for production
-        allow_credentials=True,
+        allow_origins=["http://localhost", "http://10.0.2.2"],
+        allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     # Include routers
     app.include_router(media.router)
-    
+
     return app
 
 
@@ -54,8 +55,8 @@ async def root():
         "endpoints": {
             "resolve": "/resolve/{query}",
             "search": "/resolve/search/{query}",
-            "health": "/resolve/health/provider"
-        }
+            "health": "/resolve/health/provider",
+        },
     }
 
 
@@ -67,10 +68,11 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
-        "main:app",
+        "lume_backend.main:app",
         host="0.0.0.0",
         port=8000,
         reload=True,
-        log_level="info"
+        log_level="info",
     )
