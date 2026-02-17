@@ -119,7 +119,7 @@ curl http://localhost:8000/resolve/all
 Use multiple workers in production to handle concurrent clients:
 
 ```bash
-uvicorn lume_backend.main:app --host 0.0.0.0 --port 8000 --workers 4 --log-level info
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4 --log-level info
 ```
 
 Keep `--reload` for development only.

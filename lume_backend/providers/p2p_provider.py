@@ -9,8 +9,8 @@ try:
 except ImportError:  # pragma: no cover - optional dependency in local/dev environments
     PirateBayAPI = None
 
-from lume_backend.models.schemas import MediaLink
-from lume_backend.providers.base import BaseProvider, ProviderConnectionError, ProviderTimeoutError
+from models.schemas import MediaLink
+from providers.base import BaseProvider, ProviderConnectionError, ProviderTimeoutError
 
 
 PROVIDER_TIMEOUT_SECONDS = 15

@@ -5,14 +5,14 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from lume_backend.models.schemas import MediaLink, SearchResult
-from lume_backend.providers.base import (
+from models.schemas import MediaLink, SearchResult
+from providers.base import (
     BaseProvider,
     ProviderConnectionError,
     ProviderNotFoundError,
     ProviderTimeoutError,
 )
-from lume_backend.providers.mock_provider import MockProvider
+from providers.mock_provider import MockProvider
 
 
 # Create router

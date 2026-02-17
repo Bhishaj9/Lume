@@ -3,11 +3,11 @@ from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 
-from lume_backend.main import create_application
-from lume_backend.models.schemas import MediaLink
-from lume_backend.providers.base import BaseProvider, ProviderTimeoutError
-from lume_backend.providers.p2p_provider import P2PProvider
-from lume_backend.routers.media import get_provider
+from main import create_application
+from models.schemas import MediaLink
+from providers.base import BaseProvider, ProviderTimeoutError
+from providers.p2p_provider import P2PProvider
+from routers.media import get_provider
 
 
 class TimeoutProvider(BaseProvider):
@@ -107,7 +107,7 @@ def test_p2p_provider_filters_dead_results_and_respects_limit(monkeypatch):
         def Download(item_id):
             return f"https://example.com/{item_id}"
 
-    monkeypatch.setattr("lume_backend.providers.p2p_provider.PirateBayAPI", FakePirateBayAPI)
+    monkeypatch.setattr("providers.p2p_provider.PirateBayAPI", FakePirateBayAPI)
     provider = P2PProvider()
 
     results = asyncio.run(provider.search("query", limit=2))
@@ -132,7 +132,7 @@ def test_p2p_provider_timeout_raises_provider_timeout(monkeypatch):
         def Download(_item_id):
             return "https://example.com/file"
 
-    monkeypatch.setattr("lume_backend.providers.p2p_provider.PirateBayAPI", FakePirateBayAPI)
+    monkeypatch.setattr("providers.p2p_provider.PirateBayAPI", FakePirateBayAPI)
     provider = P2PProvider()
 
     try:
