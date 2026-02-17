@@ -1,0 +1,12 @@
+# Strip Android log calls in release builds.
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    public static int w(...);
+    public static int e(...);
+    public static int println(...);
+}
+
+# Keep line numbers for crash readability while still obfuscating symbols.
+-keepattributes SourceFile,LineNumberTable
