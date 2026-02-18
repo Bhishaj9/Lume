@@ -13,7 +13,7 @@
 #     ./build_production.sh
 # ============================================================
 
-API_URL="https://your-railway-url.up.railway.app"
+API_URL="https://lume-production-967e.up.railway.app"
 
 echo "Building Lume APK for production..."
 echo "API_URL = $API_URL"

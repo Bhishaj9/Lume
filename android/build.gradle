@@ -1,0 +1,36 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(":app")
+}
+
+subprojects {
+    plugins.withId("com.android.library") {
+        android {
+            println "Configuring ${project.name}: forcing compileSdkVersion to 35"
+            compileSdkVersion 35
+            
+            if (namespace == null || namespace.isEmpty()) {
+                namespace = project.group?.toString()?.trim() ?: project.name
+            }
+        }
+        
+        configurations.all {
+            resolutionStrategy {
+                force "androidx.core:core:1.13.0"
+                force "androidx.core:core-ktx:1.13.0"
+            }
+        }
+    }
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
