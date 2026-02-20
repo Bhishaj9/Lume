@@ -3,11 +3,6 @@
 # Lume — Production APK Build Script
 # ============================================================
 #
-# ⚠️  IMPORTANT: Replace the placeholder URL below with your
-#     actual Railway deployment URL before running this script.
-#
-#     Example: https://lume-production.up.railway.app
-#
 # Usage:
 #     chmod +x build_production.sh
 #     ./build_production.sh
