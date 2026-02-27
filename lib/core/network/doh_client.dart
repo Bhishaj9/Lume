@@ -23,22 +23,42 @@ Future<String> resolveViaDoH(String hostname) async {
   }
 
   try {
-    final client = HttpClient();
+    final ip = await _performDohLookup(hostname)
+        .timeout(const Duration(seconds: 5));
+    _dohCache[hostname] = ip;
+    return ip;
+  } catch (_) {
+    // DoH itself failed or timed out — fall through to normal DNS below.
+  }
 
-    // Override DNS for the DoH endpoint itself — connect to 8.8.8.8 directly
-    // so that the ISP's broken resolver is never hit.
-    client.connectionFactory =
-        (Uri uri, String? proxyHost, int? proxyPort) {
-      final targetHost = uri.host == 'dns.google' ? '8.8.8.8' : uri.host;
-      return Socket.startConnect(targetHost, uri.port);
-    };
+  // Graceful fallback: let the OS resolve it the normal way.
+  final addresses = await InternetAddress.lookup(hostname);
+  final ip = addresses.first.address;
+  _dohCache[hostname] = ip;
+  return ip;
+}
 
-    final uri = Uri.https(
-      'dns.google',
-      '/resolve',
-      {'name': hostname, 'type': 'A'},
-    );
+/// Performs the raw DNS-over-HTTPS lookup against Google's `dns.google`.
+///
+/// Separated from [resolveViaDoH] so that the caller can wrap this with a
+/// `.timeout()` to cap how long the DoH lookup is allowed to take.
+Future<String> _performDohLookup(String hostname) async {
+  final client = HttpClient();
 
+  // Override DNS for the DoH endpoint itself — connect to 8.8.8.8 directly
+  // so that the ISP's broken resolver is never hit.
+  client.connectionFactory = (Uri uri, String? proxyHost, int? proxyPort) {
+    final targetHost = uri.host == 'dns.google' ? '8.8.8.8' : uri.host;
+    return Socket.startConnect(targetHost, uri.port);
+  };
+
+  final uri = Uri.https(
+    'dns.google',
+    '/resolve',
+    {'name': hostname, 'type': 'A'},
+  );
+
+  try {
     final request = await client.getUrl(uri);
     request.headers.set('Accept', 'application/dns-json');
     final response = await request.close();
@@ -48,27 +68,17 @@ Future<String> resolveViaDoH(String hostname) async {
       final json = jsonDecode(body) as Map<String, dynamic>;
       final answers = json['Answer'] as List<dynamic>?;
       if (answers != null && answers.isNotEmpty) {
-        // type == 1  →  A record (IPv4)
         final aRecord = answers.firstWhere(
           (a) => (a as Map<String, dynamic>)['type'] == 1,
           orElse: () => answers.first,
         ) as Map<String, dynamic>;
-        final ip = aRecord['data'] as String;
-        _dohCache[hostname] = ip;
-        client.close();
-        return ip;
+        return aRecord['data'] as String;
       }
     }
+    throw Exception('No A record found for $hostname');
+  } finally {
     client.close();
-  } catch (_) {
-    // DoH itself failed — fall through to normal DNS below.
   }
-
-  // Graceful fallback: let the OS resolve it the normal way.
-  final addresses = await InternetAddress.lookup(hostname);
-  final ip = addresses.first.address;
-  _dohCache[hostname] = ip;
-  return ip;
 }
 
 /// Builds a [IOHttpClientAdapter] that intercepts outgoing connections to
