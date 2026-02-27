@@ -16,7 +16,7 @@ final tmdbMovieProvider =
     }
 
     final dio = await ref.watch(dioProvider.future);
-    final response = await dio.get<Map<String, dynamic>>('/tmdb/$movieId');
+    final response = await dio.get<Map<String, dynamic>>('/resolve/tmdb/$movieId');
     return response.data ?? <String, dynamic>{};
   },
 );

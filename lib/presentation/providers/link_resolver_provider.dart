@@ -34,6 +34,7 @@ final dioProvider = FutureProvider<Dio>((ref) async {
     // Warm up the DoH cache eagerly so the first real API call is instant.
     await resolveViaDoH(_productionHost).catchError((_) => '');
     dio.httpClientAdapter = buildDohAdapter(_productionHost);
+    dio.interceptors.add(buildHostHeaderInterceptor(_productionHost));
   }
 
   return dio;

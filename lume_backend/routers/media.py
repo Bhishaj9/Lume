@@ -214,3 +214,12 @@ async def check_provider_health(provider: BaseProvider = Depends(get_provider)) 
         )
 
     return {"status": "healthy", "provider": provider.name}
+
+
+@router.get(
+    "/tmdb/{movie_id}",
+    summary="Get TMDB metadata (mock)",
+)
+async def get_tmdb_metadata(movie_id: str) -> dict:
+    """Return a mock TMDB metadata object for connection verification."""
+    return {"id": movie_id, "title": "Connection Verified", "status": "ok"}
