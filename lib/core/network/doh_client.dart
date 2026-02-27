@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 
 // ---------------------------------------------------------------------------
@@ -107,22 +106,6 @@ IOHttpClientAdapter buildDohAdapter(String targetHost) {
       };
 
       return client;
-    },
-  );
-}
-
-/// Returns a Dio [Interceptor] that explicitly sets the `Host` header to
-/// [hostname] on every outgoing request.
-///
-/// When the [buildDohAdapter] connects to an IP address directly, the
-/// `Host` header may default to the raw IP.  Railway (and other PaaS hosts)
-/// rely on the `Host` header to route traffic to the correct service, so
-/// this interceptor ensures it is always set to the actual hostname.
-Interceptor buildHostHeaderInterceptor(String hostname) {
-  return InterceptorsWrapper(
-    onRequest: (options, handler) {
-      options.headers['Host'] = hostname;
-      handler.next(options);
     },
   );
 }
